@@ -1,0 +1,22 @@
+//@version=6
+strategy("Automation tests strategy script", overlay=true, fill_orders_on_standard_ohlc = true)
+OFFSET_TIME = input.time(timestamp('17 Jun 2024 00:00'), 'Select date and time', inline = '1', tooltip = 'Date and time picker')
+OL_LEG3_EN = input.bool(true, 'OL leg 3', inline = '41', group = 'Pyramiding', display = display.data_window)
+OL_LEG3_PRICE_DOWN = input.int(2, '%', minval = 0, maxval = 100, inline = '41', group = 'Pyramiding', display = display.data_window)
+OL_LEG3_ORDER = input.float(0.5, 'order', inline = '41', tooltip = 'Input with boolean, integer and float in a group', group = 'Pyramiding', display = display.data_window)
+PRICE = input(close, 'Price source', display = display.data_window, tooltip = 'Select source')
+enum OL_LEG1_TRIGGERS
+    OLC = 'OL Condition'
+    OLC2 = 'OLC2'
+    OLC2_3 = 'OLC2 or OLC3'
+    OLC2_3_4 = 'OLC2 or OLC3 or OLC4'
+    OLC2_4 = 'OLC2 or OLC4'
+OL_LEG1_SUB_TRIGGER = input.enum(OL_LEG1_TRIGGERS.OLC, 'Trigger OL leg 1 on', group = 'Pyramiding', tooltip = 'Dropdown select', display = display.data_window)
+longCondition = ta.crossover(ta.sma(close, 14), ta.sma(close, 28))
+if (longCondition)
+    strategy.entry("My Long Entry Id", strategy.long)
+shortCondition = ta.crossunder(ta.sma(close, 14), ta.sma(close, 28))
+if (shortCondition)
+    strategy.entry("My Short Entry Id", strategy.short)
+plotchar(longCondition, 'OL leg1', '😳', location.abovebar, color = color.green, text = 'OL1', size = size.normal)
+plot(PRICE, 'Price', color.rgb(6, 160, 221), 3)

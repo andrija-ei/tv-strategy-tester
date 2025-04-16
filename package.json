@@ -1,0 +1,28 @@
+{
+  "name": "tv-strategy-tester",
+  "version": "1.0.0",
+  "description": "This project automates the testing of Pine Script strategies on [TradingView](https://www.tradingview.com/) using [Playwright](https://playwright.dev/).   It supports running tests both locally and on CI (GitHub Actions), with a manual step to handle CAPTCHA-based authentication.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "auth": "tsx save-auth.ts",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:ci": "playwright install --with-deps && playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "playwright": "^1.51.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.51.1",
+    "tsx": "^4.19.3"
+  }
+}
