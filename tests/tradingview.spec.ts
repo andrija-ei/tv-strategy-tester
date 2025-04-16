@@ -7,10 +7,7 @@ const strategyScript = fs.readFileSync(
   "utf8"
 );
 
-const LOGIN_URL = "https://www.tradingview.com/accounts/signin/";
 const CHART_URL = "https://www.tradingview.com/chart/";
-const USERNAME = "andrija.avramovic@engineeringinsights.com";
-const PASSWORD = "HaNsPassword1970!";
 
 async function checkForAuth() {
   if (!fs.existsSync("auth.json")) {
@@ -18,15 +15,6 @@ async function checkForAuth() {
       "Missing auth.json. Please run `save-auth.ts` locally and commit the file."
     );
   }
-}
-
-async function login(page: Page) {
-  await page.goto(LOGIN_URL);
-  await page.getByRole("button", { name: "Email" }).click({ force: true });
-  await page.fill('input[name="id_username"]', USERNAME);
-  await page.fill('input[name="id_password"]', PASSWORD);
-  await page.getByRole("button", { name: "Sign in" }).click({ force: true });
-  await page.waitForLoadState("networkidle");
 }
 
 async function removeStrategy(page: Page) {
