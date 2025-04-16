@@ -38,10 +38,10 @@ npm run auth
 npm run test
 ```
 
-Or with browser visible:
+Or with ui:
 
 ```bash
-npm run test:headed
+npm run test:ui
 ```
 
 ---
