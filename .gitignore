@@ -3,3 +3,8 @@ dist/
 *.log
 .vscode/
 test-results
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
