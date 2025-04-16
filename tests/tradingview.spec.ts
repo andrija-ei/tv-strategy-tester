@@ -10,16 +10,11 @@ const strategyScript = fs.readFileSync(
 
 const CHART_URL = "https://www.tradingview.com/chart/";
 
-async function isSessionValid(page: Page): Promise<boolean> {
-  await page.goto("https://www.tradingview.com/");
-  try {
-    // Try to detect user avatar (appears when logged in)
-    await page.waitForSelector('[data-name="header-user-menu-toggle"]', {
-      timeout: 5000,
-    });
-    return true;
-  } catch {
-    return false;
+async function checkForAuth() {
+  if (!fs.existsSync("auth.json")) {
+    throw new Error(
+      "Missing auth.json. Please run `save-auth.ts` locally and commit the file."
+    );
   }
 }
 
@@ -32,6 +27,7 @@ async function testStrategy(page: Page) {
   await page
     .getByRole("button", { name: "Strategy Tester" })
     .click({ force: true });
+  await page.waitForTimeout(2000);
   await page
     .locator("#bottom-area")
     .screenshot({ path: "screenshots/strategy-result.png" });
@@ -74,6 +70,7 @@ test.describe("TradingView Strategy Tests", () => {
     const context = await browser.newContext({ storageState: "auth.json" });
     const page = await context.newPage();
 
+    await checkForAuth();
     await navigateToChart(page);
     await testStrategy(page);
 
