@@ -48,7 +48,4 @@ npm run test:ui
 
 ## 🧪 Run on CI (GitHub Actions)
 
-CI runs headless and skips login (CAPTCHA can’t be bypassed).
-Auth-based tests will be skipped or mocked in this mode.
-
-_CI Config: .github/workflows/playwright.yml_
+CI runs headless and saves playwright report and screenshots to artifacts
