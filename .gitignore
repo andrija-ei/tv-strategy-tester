@@ -1,6 +1,5 @@
 node_modules/
 dist/
-auth.json
 *.log
 .vscode/
 test-results
