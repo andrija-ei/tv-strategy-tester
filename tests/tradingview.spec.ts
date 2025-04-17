@@ -61,11 +61,15 @@ async function testStrategy(page: Page, name: string, config: StrategyConfig) {
   await page.getByText("Add to chart").click();
   await page.waitForTimeout(2000);
 
-  console.log("✅ Strategy applied to chart");
+  await page
+    .locator(".chart-container")
+    .screenshot({ path: path.join(strategyDir, "strategy-chart.png") });
 
   await page
     .locator("#bottom-area")
-    .screenshot({ path: path.join(strategyDir, "strategy-test-result.png") });
+    .screenshot({ path: path.join(strategyDir, "strategy-test-overview.png") });
+
+  console.log(`✅ ${name} strategy applied to chart`);
 }
 
 test.describe("Automation tests strategy script", () => {
