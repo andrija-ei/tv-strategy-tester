@@ -2,7 +2,7 @@ import { test, Page, chromium } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 import { strategyConfigs } from "../src/config/strategyConfig";
-import { generateStrategyCode } from "../utils/generateStrategy";
+import { checkForAuth, generateStrategyCode } from "../utils";
 import { StrategyConfig } from "../src/types";
 
 const strategyTemplate = fs.readFileSync(
@@ -11,14 +11,6 @@ const strategyTemplate = fs.readFileSync(
 );
 
 const CHART_URL = "https://www.tradingview.com/chart/";
-
-async function checkForAuth() {
-  if (!fs.existsSync("auth.json")) {
-    throw new Error(
-      "Missing auth.json. Please run `save-auth.ts` locally and commit the file."
-    );
-  }
-}
 
 async function removeStrategy(page: Page) {
   await page.getByRole("button", { name: "Remove Objects" }).click();
