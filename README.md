@@ -16,33 +16,54 @@ It supports running tests both locally and on CI (GitHub Actions), with a manual
 
 ## 🚀 Getting Started
 
-### Install dependencies
+Follow these steps to set up and run the TradingView strategy automation project:
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-org/tv-strategy-tester.git
+cd tv-strategy-tester
+```
+
+### 2. Install Dependencies
+
+Install all required packages:
 
 ```bash
 npm install
 npx playwright install
 ```
 
-### Authenticate once (manually)
+### 3. Authenticate with TradingView
+
+Run the following command to launch a browser and manually log in to TradingView (handle CAPTCHA). Once redirected to the homepage, the session will be saved automatically and the browser will close.
 
 ```bash
 npm run auth
 ```
 
-> You’ll have 60 seconds to log in and solve CAPTCHA.
-> Once logged in, your session will be saved to auth.json.
+> This will save your session credentials to `auth.json` for future test runs.
 
-### Run the test locally
+### 4. Run All Strategy Tests Locally
+
+Run the full test suite in headless mode:
 
 ```bash
 npm run test
 ```
 
-Or with ui:
+Or run the tests with the Playwright UI for debugging:
 
 ```bash
 npm run test:ui
 ```
+
+### 5. Review Test Results
+
+After the test run:
+
+- Screenshots for each strategy scenario will be saved to the `screenshots/` directory, grouped in subfolders by strategy name.
+- A Playwright report will be generated and available via CI artifacts or in the `playwright-report/` folder locally (if configured).
 
 ---
 

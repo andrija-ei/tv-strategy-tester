@@ -1,8 +1,3 @@
-//  Opens a browser with Playwright
-//  Lets you log in manually
-// 	Waits 60 seconds
-// 	Saves your session to auth.json (including cookies, tokens, etc.)
-
 import { chromium } from "@playwright/test";
 
 (async () => {
@@ -11,15 +6,18 @@ import { chromium } from "@playwright/test";
   const page = await context.newPage();
 
   await page.goto("https://www.tradingview.com/accounts/signin/");
+  console.log(
+    "➡️ Please manually log in (handle CAPTCHA). Waiting for redirect..."
+  );
 
-  console.log("➡️ Please manually log in within the browser (handle captcha).");
-  console.log("🕒 You have 60 seconds...");
+  try {
+    await page.waitForURL("https://www.tradingview.com/", { timeout: 120000 });
 
-  await page.waitForTimeout(60000);
-  // Save auth config to json
-  await context.storageState({ path: "auth.json" });
-
-  console.log("✅ Auth session saved to auth.json");
-
-  await browser.close();
+    await context.storageState({ path: "auth.json" });
+    console.log("✅ Auth saved to auth.json — closing browser.");
+    await browser.close();
+  } catch (error) {
+    console.error("❌ Login not detected in time.");
+    await browser.close();
+  }
 })();
