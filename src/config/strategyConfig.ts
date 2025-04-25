@@ -1,25 +1,24 @@
 import { StrategyConfig } from "../types";
 
-export const strategyConfigs: StrategyConfig[] = [
+export const strategyConfig: StrategyConfig[] = [
   {
-    name: "default",
-    OL_LEG3_EN: true,
-    OL_LEG3_PRICE_DOWN: 2,
-    OL_LEG3_ORDER: 0.5,
-    OL_LEG1_SUB_TRIGGER: "OLC",
+    name: "OL Condition - open",
+    trigger: "OL Condition",
+    price_source: "open",
   },
   {
-    name: "trigger-olc3",
-    OL_LEG3_EN: false,
-    OL_LEG3_PRICE_DOWN: 10,
-    OL_LEG3_ORDER: 1.0,
-    OL_LEG1_SUB_TRIGGER: "OLC2_3",
+    name: "OL Condition - high",
+    trigger: "OL Condition",
+    price_source: "high",
   },
   {
-    name: "trigger-olc4",
-    OL_LEG3_EN: true,
-    OL_LEG3_PRICE_DOWN: 50,
-    OL_LEG3_ORDER: 2.0,
-    OL_LEG1_SUB_TRIGGER: "OLC2_4",
+    name: "OL Condition - low",
+    trigger: "OL Condition",
+    price_source: "low",
+  },
+  {
+    name: "OL Condition - close",
+    trigger: "OL Condition",
+    price_source: "close",
   },
 ];

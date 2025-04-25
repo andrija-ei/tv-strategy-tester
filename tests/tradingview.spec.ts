@@ -1,12 +1,12 @@
 import { test, Page, chromium } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
-import { strategyConfigs } from "../src/config/strategyConfig";
-import { checkForAuth, generateStrategyCode } from "../utils";
+import { checkForAuth } from "../utils";
 import { StrategyConfig } from "../src/types";
+import { strategyConfig } from "../src/config/strategyConfig";
 
-const strategyTemplate = fs.readFileSync(
-  path.join(__dirname, "../src/templates/strategy.template.txt"),
+const strategy = fs.readFileSync(
+  path.join(__dirname, "../src/base/strategy.txt"),
   "utf8"
 );
 
@@ -23,16 +23,14 @@ async function navigateToChart(page: Page) {
   await page.waitForSelector(".chart-container");
 }
 
-async function testStrategy(page: Page, name: string, config: StrategyConfig) {
+async function addStrategy(page: Page, name: string) {
   await page.getByRole("button", { name: "Pine Editor" }).click();
   await page.getByText("@version=").click();
   await page.keyboard.press("Control+A");
 
-  const strategyCode = generateStrategyCode(strategyTemplate, config);
-
   await page.evaluate(async (text) => {
     await navigator.clipboard.writeText(text);
-  }, strategyCode);
+  }, strategy);
 
   await page.getByText("@version=").click({ button: "right" });
 
@@ -40,41 +38,61 @@ async function testStrategy(page: Page, name: string, config: StrategyConfig) {
   for (let i = 0; i < 8; i++) await page.keyboard.press("ArrowUp");
   await page.keyboard.press("Enter");
 
-  const strategyDir = path.join("screenshots", name);
-  if (!fs.existsSync(strategyDir)) {
-    fs.mkdirSync(strategyDir, { recursive: true });
-  }
-
-  await page.waitForTimeout(2000);
-  await page
-    .locator("#bottom-area")
-    .screenshot({ path: path.join(strategyDir, "strategy-code.png") });
-
   await page.getByText("Add to chart").click();
   await page.waitForTimeout(2000);
-
-  await page
-    .locator(".chart-container")
-    .screenshot({ path: path.join(strategyDir, "strategy-chart.png") });
-
-  await page
-    .locator("#bottom-area")
-    .screenshot({ path: path.join(strategyDir, "strategy-test-overview.png") });
 
   console.log(`✅ ${name} strategy applied to chart`);
 }
 
+async function changeStrategyConfig(
+  page: Page,
+  config: StrategyConfig,
+  strategyDir: string
+  // option?: string
+) {
+  await page
+    .getByRole("button", { name: "Automation tests strategy script report" })
+    .click();
+  await page.getByText("Settings…").click();
+  await page.waitForTimeout(2000);
+
+  await page.getByRole("button", { name: "close", exact: true }).click();
+  await page.waitForTimeout(1000);
+
+  await page.getByRole("option", { name: config.price_source }).click();
+  await page.waitForTimeout(1000);
+
+  await page
+    .locator(".dialog-qyCw0PaN ")
+    .screenshot({ path: path.join(strategyDir, "input-setup.png") });
+
+  await page.getByRole("button", { name: "Ok" }).click();
+}
+
+async function testStrategy(page: Page, strategyDir: string) {
+  await page
+    .locator("#bottom-area")
+    .screenshot({ path: path.join(strategyDir, "test-overview.png") });
+}
+
 test.describe("Automation tests strategy script", () => {
   checkForAuth();
-  for (const config of strategyConfigs) {
+  for (const config of strategyConfig) {
     test(`Run strategy: ${config.name}`, async () => {
       const browser = await chromium.launch({ headless: true });
       const context = await browser.newContext({ storageState: "./auth.json" });
       const page = await context.newPage();
+      const strategyDir = path.join("screenshots", config.name);
+
+      if (!fs.existsSync(strategyDir)) {
+        fs.mkdirSync(strategyDir, { recursive: true });
+      }
 
       await navigateToChart(page);
       await removeStrategy(page);
-      await testStrategy(page, config.name, config);
+      await addStrategy(page, config.trigger);
+      await changeStrategyConfig(page, config, strategyDir);
+      await testStrategy(page, strategyDir);
     });
   }
 });
