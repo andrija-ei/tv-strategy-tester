@@ -48,7 +48,6 @@ async function changeStrategyConfig(
   page: Page,
   config: StrategyConfig,
   strategyDir: string
-  // option?: string
 ) {
   await page
     .getByRole("button", { name: "Automation tests strategy script report" })
