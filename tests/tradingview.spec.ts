@@ -1,7 +1,7 @@
 import { test, Page, chromium } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
-import { checkForAuth } from "../utils";
+import { checkForAuth, checkForDir } from "../utils";
 import { StrategyConfig } from "../src/types";
 import { strategyConfig } from "../src/config/strategyConfig";
 
@@ -82,10 +82,7 @@ test.describe("Automation tests strategy script", () => {
       const context = await browser.newContext({ storageState: "./auth.json" });
       const page = await context.newPage();
       const strategyDir = path.join("screenshots", config.name);
-
-      if (!fs.existsSync(strategyDir)) {
-        fs.mkdirSync(strategyDir, { recursive: true });
-      }
+      checkForDir(strategyDir);
 
       await navigateToChart(page);
       await removeStrategy(page);
